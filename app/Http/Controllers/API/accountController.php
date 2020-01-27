@@ -179,10 +179,10 @@ class accountController extends Controller
 
         $destroyAccount = Accounts::where('account_name', $name);
         $destroyProxy = Proxy::where('id',$findIdProxy[0]->acc_proxy_id);
-        $findIdBM = Accounts::where('account_name',$name)->with('BusinessManager')->with('BusinessManager.ACT');
+      
 
             
-        $$findIdBM->delete();
+        
         $destroyProxy->delete();
         $destroyAccount->delete();
 
