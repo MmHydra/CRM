@@ -21,7 +21,7 @@ class DataPanel extends Controller
 		 		
 		 		 $Data_Owners = Owners::all();
 
-
+		 		 
 
 		 		 return view('API.Accounts')->with(['Data_Owners' => $Data_Owners,
 		 											'array_Data_Accounts' => $Data_Accounts]);

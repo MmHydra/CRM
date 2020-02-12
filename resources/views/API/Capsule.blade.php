@@ -36,203 +36,286 @@ var obj;
 const token = '{{ csrf_token() }}';
 
 var sendFormAccountsProxy = {
-   url : '',
-   method : '', 
-   showCreateAccounts : function(){
-       url =  '';
-       method = 'POST';
+   status : {}, // статус код, возвращается функцией вызова сервера
+   message : {}, // запрашиваемые данные, возвращается функцией вызова сервера
+     /* Функция получает status и message от сервера -> вызывает функцию обработки результата
+       @param {url} string.
+       @param {method} string.
+       @param {data} array.
+       @param {returnData} function. 
+       @return Вызов функции returnDataFunc с object параметром.
+    */
+    fetchData :  function(url, method, data = null, handleRequestData, elem){
+        fetch(url, {
+           headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+           "X-CSRF-Token": token
+           },
+           method: method,
+           body: data,
+           credentials: "same-origin",
+        })
+        .then(function(response){
+          //status = response.status;
+          status = response.status;
+          return response.json();
+        })
+        .then(function(response){
+          message = response;
+          handleRequestData({status : status, message : message}, elem);
+        })     
+    },
+   /* Функция инициализирует заполнение поле владелец формы создания аккаунта
+      @return Ничего.
+   */
+   showCreateAccounts : function(url, method){
+       // let status = {};
+       // let message = {};
+       var url =  url;
+       var method = method;
+       var data;
        $('#modalCreateAccounts').modal('show');
-              if($('.ownerOptions').length == 0){
-                fetch("accounts/create", {
-                headers: {
-                'Content-Type': 'application/json',
-                "X-CSRF-Token": token
-                },
-                method: "GET",
-                credentials: "same-origin",
-                })
-                .then(function(response){
-                      return response.json();
-                })
-                .then(function(data){
-                                                 // data => obj = data;
-                      return dataOwnersProxyes = data;
-                })
-                .then(function(){
-                     
-                      $('#selectOwners').append(
-                          dataOwnersProxyes.map(n =>`<option name="ownerName" class="_accountFormInputOwner">${n.name}</option>`)
-                      );
-                })
-                }
+              if($('#selectOwners option').length == 0){
+                sendFormAccountsProxy.fetchData(url, method, data, handleRequestData);
+
+                /* Функция парсит option-ы в поле владелец формы создания аккаунта
+                   @param {object} данные для парсинга (status, message).
+                   @return Ничего.
+                */
+                function handleRequestData(data){
+                  console.log(data.message);
+                  $('#selectOwners').append(
+                  data.message.map(n =>`<option name="ownerName" class="_accountFormInputOwner">${n.name}</option>`));
+                }   
+      }
 
     },
-    submitFormAccountProxy : function(elem){      
+
+  
+
+    submitFormAccountProxy : function(elem, url, method){  
+       var urlRequest = url;
+       var method = method;    
        var data = {};
        data.ownerName = $('#'+elem+'').find("select option:selected").text();
-       console.log("data.ownerName = " + data.ownerName);
-     // data.ownerName = $('#selectOwners option:selected').text();
+       data.BillingInUse = $('#'+elem+'').find(".checkbox").is(':checked');
       $('#'+elem+'').find('._accountFormInputs').each(function() {
-      data[this.name] = $(this).val();
+        data[this.name] = $(this).val();
       });
       data = JSON.stringify(data);
-     
-
-
-      console.log(data);
       $('#'+elem+'').find(".outputSpan").remove();
+      console.log(data);
       //$("#errorsOutput").css('display', 'none');
-      fetch('/accounts/' + url, {
-                headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                "X-CSRF-Token": token,
-                },
-                body: data,
-                method: method,
-                credentials: "same-origin",
-                })
-                  .then((response) => {
-                    console.log($('#'+elem+'').html()); 
-                     
-                      if (response.ok) {
-                        
-                      $('#'+elem+'').find(".errorsOutput").css('display', '');
-                      
-                      $('#'+elem+'').find(".errorsOutput").append(
-                        `<span class="outputSpan" style="color:green;">Аккаунт создан успешно</span>`);  
-                      }
-                      else{
-                        data = response.json();
-                        return data;
-                      } 
-                  })
-                  .then((data) => {
-                       return Promise.reject(data);
-                  })  
-                  .catch((data)=>{
-                        console.log(data);
-                        console.log(typeof data);
-                        $('#'+elem+'').find(".errorsOutput").css('display', '');
-                        for(key in data.errors){
-                        $('#'+elem+'').find(".errorsOutput").append(`<span class="outputSpan" style="color:red;display: flex;flex-direction: column">${key} - ${data.errors[key]}</span`);
-                        }
-                })
-                            
+      sendFormAccountsProxy.fetchData(url, method, data, handleRequestData, elem);
+      function handleRequestData(data, elem){
+          if(data.status == 422){
+            $('#'+elem+'').find(".errorsOutput").css('display', '');
+            for(key in data.message.errors){
+                $('#'+elem+'').find(".errorsOutput").append(`<span class="outputSpan" style="color:red;display: flex;flex-direction: column">${key} - ${data.message.errors[key]}</span`);
+            }
+          }
+          if(data.status == 200){ 
+            $('#'+elem+'').find(".errorsOutput").css('display', '').append(`<span class="outputSpan" style="color:green;">Успешно</span>`);
+             
+
+          }
+      }
     },
-    updateAccountProxy : function(elem){
-      url = elem,
-      method = 'PATCH',
-      $("._accountFormInputOwner").remove();  
-        //.siblings().find('.account_names'));
+    EditAccountProxy : function(elem, url, method){
+      var url = url;
+      var method = method;
+      var data;
+      $(".errorsOutput").css('display', 'none');
+      $("._accountFormInputOwner").remove();   
       var formNameValue;
-      fetch("/accounts/"+ url +"/edit", {
-                headers: {
-                'Content-Type': 'application/json',
-                "X-CSRF-Token": token
-                },
-                method: "GET",
-                credentials: "same-origin",
-                })
-                .then(function(response){
-                  return response.json();
-                  
-                })
-                .then(function(response){
-                  var arrOwners = [];
-                  for(key in response.ownersResponse){
-                    arrOwners.push(response.ownersResponse[key].name);
-                  }
+      sendFormAccountsProxy.fetchData(url, method, data, handleRequestData, elem);
+      function handleRequestData(data, elem){
+        var arrOwners = [];
+        for(key in data.message.ownersResponse){
+        arrOwners.push(data.message.ownersResponse[key].name);      
+        }
+        $('#selectOwnersEdit').append(arrOwners.map(n=>`<option name="ownerName" class="_accountFormInputOwner">${n}</option>`));
+        formNameValue = {
+          'accountID' : data.message.accountResponse[0].id,
+          'accountName' : data.message.accountResponse[0].account_name,
+          'keitaroID' : data.message.accountResponse[0].keitaro_comp_id,
+          'tokenFB' : data.message.accountResponse[0].token_fb,
+          'ownerName' : data.message.accountResponse[0].owners.name,
+          'BillingInUse' : data.message.accountResponse[0].BillingInUse,
+          'proxyIP' : data.message.accountResponse[0].proxyes.ip,
+          'proxyPort' : data.message.accountResponse[0].proxyes.port,
+          'proxyLogin' : data.message.accountResponse[0].proxyes.login,
+          'proxyPassword' : data.message.accountResponse[0].proxyes.password,
+          'proxyType' : data.message.accountResponse[0].proxyes.proxy_type
+        };
+        for(key in formNameValue){
+          if(key == 'ownerName'){
+            console.log(formNameValue[key]);
+            $('#selectOwnersEdit :contains('+formNameValue[key]+')').attr("selected", "selected");
+          }
+          else if(key == 'BillingInUse'){
+            if(formNameValue[key] == 1){
+              console.log( $('#modalUpdateAccounts').find('.checkbox'));
+              $('#modalUpdateAccounts').find('.checkbox').prop('checked', true);
+            }
+          }
+          else{
+            $("#modalUpdateAccounts").find("[name="+key+"]").val(formNameValue[key]);
+          }
+        }
+        $('#modalUpdateAccounts').modal('show');   
+      }
+    },
 
-                  $('#selectOwnersEdit').append(
-                    arrOwners.map(n=>`<option name="ownerName" class="_accountFormInputOwner">${n}</option>`)
-                  );
-                    //response.ownersResponse[key].name;
-                  
-                  console.log(response);
-                  formNameValue = {
-                    'accountName' : response.accountResponse[0].account_name,
-                    'keitaroID' : response.accountResponse[0].keitaro_comp_id,
-                    'tokenFB' : response.accountResponse[0].token_fb,
-                    'ownerName' : response.accountResponse[0].owners.name,
-                    'proxyIP' : response.accountResponse[0].proxyes.ip,
-                    'proxyPort' : response.accountResponse[0].proxyes.port,
-                    'proxyLogin' : response.accountResponse[0].proxyes.login,
-                    'proxyPassword' : response.accountResponse[0].proxyes.password,
-                    'proxyType' : response.accountResponse[0].proxyes.proxy_type,
-                  }  
-                for(key in formNameValue){
-                  if(key == 'ownerName'){
-                    console.log(formNameValue[key]);
-                    $('#selectOwnersEdit :contains('+formNameValue[key]+')').attr("selected", "selected");
-                  }
-                  else{
-                  $("#modalUpdateAccounts").find("[name="+key+"]").val(formNameValue[key]);
-                  }
-                   } 
-                  
-                })
-           
-        
+    // EditAccountProxy : function(elem, url, method){
+    //   var url = url;
+    //   var method = method;
+    //   var data;
+    //   $(".errorsOutput").css('display', 'none');
+    //   $("._accountFormInputOwner").remove();  
+    //     //.siblings().find('.account_names'));
+    //   var formNameValue;
+    //   sendFormAccountsProxy.fetchData(url, method, data, handleRequestData, elem);
 
-       $('#modalUpdateAccounts').modal('show');
-    },
-    showModalDelete : function(elem){
+    //   function handleRequestData(data, elem){
+    //     var arrOwners = [];
+    //     for(key in data.message.ownersResponse){
+    //       arrOwners.push(data.message.ownersResponse[key].name);
+    //     }
+    //     $('#selectOwnersEdit').append(arrOwners.map(n=>`<option name="ownerName" class="_accountFormInputOwner">${n}</option>`));
+    //     console.log(data);
+    //     formNameValue = {
+    //      'accountID' : data.message.accountResponse[0].id,
+    //      'accountName' : data.message.accountResponse[0].account_name,
+    //       'keitaroID' : data.message.accountResponse[0].keitaro_comp_id,
+    //       'tokenFB' : data.message.accountResponse[0].token_fb,
+    //       'ownerName' : data.message.accountResponse[0].owners.name,
+    //       'proxyIP' : data.message.accountResponse[0].proxyes.ip,
+    //       'proxyPort' : data.message.accountResponse[0].proxyes.port,
+    //       'proxyLogin' : data.message.accountResponse[0].proxyes.login,
+    //       'proxyPassword' : data.message.accountResponse[0].proxyes.password,
+    //       'proxyType' : data.message.accountResponse[0].proxyes.proxy_type,
+    //     };  
+    //     for(key in formNameValue){
+    //       if(key == 'ownerName'){
+    //         console.log(formNameValue[key]);
+    //         $('#selectOwnersEdit :contains('+formNameValue[key]+')').attr("selected", "selected");
+    //       }
+    //       else{
+    //         $("#modalUpdateAccounts").find("[name="+key+"]").val(formNameValue[key]);
+    //       }
+    //     } 
       
-      url = elem;
-      method = 'DELETE';
-      $('#modalDelete').modal('show');
-    },
-    deleteAccount : function(){
-      $('#infoResponse').find('.outputSpan').remove();
-      fetch("/accounts/"+ url, {
-                headers: {
-                'Content-Type': 'application/json',
-                "X-CSRF-Token": token
-                },
-                method: method,
-                credentials: "same-origin",
-                })
-                .then(function(response){
-                  if (response.ok){
-                    console.log("ok");
-                    $('#infoResponse').append(`<span class="outputSpan" style="color:green;">Аккаунт успешно удален</span`);
-                  }
-                  if (!response.ok){
-                    console.log("not ok");
-                    $('#infoResponse').append(`<span class="outputSpan" style="color:red;">Произошла ошибка</span`);
-                  }
+    //     $('#modalUpdateAccounts').modal('show');
+    //   }
+    // }
+  
+
+     deleteGroupObject : {   url : '',
+                            method : '',
+                            elem : '',
+                            data : null,
+                            showModalDelete : function(){ 
+                              $('#modalDelete').modal('show');
+                              $('.outputSpan').remove();
+                              console.log(this.url, this.method);
+                            },
+
+                            submitDeleteAccount : function(){
+                              $('#infoResponse').find('.outputSpan').remove();
+                              sendFormAccountsProxy.fetchData(this.url, this.method, this.data, handleRequestData, this.elem);
+                              function handleRequestData(data, elem){
+                                console.log(data.status);
+                                if(data.status == 200){
+                                  $('#infoResponse').append(`<span class="outputSpan" style="color:green;">Аккаунт успешно удален</span`);
+                                }
+                                else{
+                                   $('#infoResponse').append(`<span class="outputSpan" style="color:red;">Произошла внутренняя ошибка</span`);
+                                }
+                              }
+                            },
+    
+
+      }
+}
+
+    
+
+
+    //   fetch("/accounts/"+ url, {
+    //             headers: {
+    //             'Content-Type': 'application/json',
+    //             "X-CSRF-Token": token
+    //             },
+    //             method: method,
+    //             credentials: "same-origin",
+    //             })
+    //             .then(function(response){
+    //               if (response.ok){
+    //                 console.log("ok");
+    //                 $('#infoResponse').append(`<span class="outputSpan" style="color:green;">Аккаунт успешно удален</span`);
+    //               }
+    //               if (!response.ok){
+    //                 console.log("not ok");
+    //                 $('#infoResponse').append(`<span class="outputSpan" style="color:red;">Произошла ошибка</span`);
+    //               }
                   
-                  })
-    },
-    }
+    //               })
+    // },
+    // }
       
-          
+         
                                                                                                       
 
 ////////////////////////////////////////////////////
 
   function openFormAccountProxy(){
-      sendFormAccountsProxy.showCreateAccounts();
+    var url = 'accounts/create';
+    var method = 'GET';
+    sendFormAccountsProxy.showCreateAccounts(url, method);
   } 
+
    function openFormAccountProxyUpdate(){
       var elem = event.target;
+      var url = '';
+      var method = 'GET';
       elem = $(elem).parents("td").siblings(".account_names").text();
-      sendFormAccountsProxy.updateAccountProxy(elem);
+      url = "/accounts/"+ elem +"/edit";
+      sendFormAccountsProxy.EditAccountProxy(elem, url, method);
   }   
 
-  function submitForm(){
+  function submitFormStore(){
       var elem = event.target;
+      var url = '';
+      var method = 'POST';
       elem = $(elem).parent("div").siblings("form").attr("id");
-      console.log("elem = " + elem); 
-    sendFormAccountsProxy.submitFormAccountProxy(elem);
+      url = '/accounts/' 
+    sendFormAccountsProxy.submitFormAccountProxy(elem, url, method);
+  }
+
+  function submitFormUpdate(){
+      var elem = event.target;
+      console.log(elem);
+      var url = '';
+      var method = 'PATCH';
+      elem = $(elem).parent("div").siblings("form").attr("id");
+      url ='/accounts/' + elem;
+      console.log(url);
+    sendFormAccountsProxy.submitFormAccountProxy(elem, url, method);
   }
 
   function openModalAccountProxyDelete(){
     var elem = event.target;
+    var url = '';
+    var method = 'DELETE';
     elem = $(elem).parents("td").siblings(".account_names").text();
-    sendFormAccountsProxy.showModalDelete(elem);
+    sendFormAccountsProxy.deleteGroupObject.url = '/accounts/' + elem;
+    sendFormAccountsProxy.deleteGroupObject.method = method;
+    sendFormAccountsProxy.deleteGroupObject.elem = elem;
+    sendFormAccountsProxy.deleteGroupObject.showModalDelete();
   }
+
 
 
 

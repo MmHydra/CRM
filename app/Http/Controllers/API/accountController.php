@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\storeAccountForm;
 use App\Http\Requests\updateAccountForm;
 use App\Owners;
 use App\Accounts;
@@ -49,23 +50,24 @@ class accountController extends Controller
         $storeProxy->password = $request->proxyPassword;
         $storeProxy->proxy_type = $request->proxyType;
         $storeProxy->save();
-        $ss = $storeProxy->latest()->first()->id;
+        $getProxyID = $storeProxy->latest()->first()->id;
         
 
 
         $account_Owner = Owners::where('name', $request->ownerName)->get();
-        $dd = $account_Owner[0]->id;
+        $getOwnerID = $account_Owner[0]->id;
         
         $storeAccounts = new Accounts;
         $storeAccounts->account_name = $request->accountName;
-        $storeAccounts->acc_owner = $dd;
+        $storeAccounts->acc_owner = $getOwnerID;
         $storeAccounts->keitaro_comp_id = $request->keitaroID;
         $storeAccounts->token_fb = $request->tokenFB;
-        $storeAccounts->acc_proxy_id = $ss;
+        $storeAccounts->acc_proxy_id = $getProxyID;
         $storeAccounts->status_id = 1;
+        $storeAccounts->BillingInUse =$request->BillingInUse;
         $storeAccounts->save();
 
-        
+        return response()->json(['success' => 'yay']);
     }
 
     /**
@@ -89,7 +91,7 @@ class accountController extends Controller
     {  
         
         $accountData = new Accounts;
-     
+        
         $accountResponse = $accountData->where('account_name', $name)->with(['proxyes'=> function($q)
             {$q->select('id','ip', 'port','login','password','proxy_type');}])->with(
             ['owners' => function($q)
@@ -118,15 +120,24 @@ class accountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(updateAccountForm $request, $name)
+    public function update(updateAccountForm $request,  $id)
     {   
 
-     
+        
         
 
 
         $account_Owner = Owners::where('name', $request->ownerName)->get();
-        $dd = $account_Owner[0]->id;
+        $getOwnerID = $account_Owner[0]->id;
+
+        $storeAccounts = Accounts::where('id', $request->accountID)->update([
+        'account_name' => $request->accountName,
+        'acc_owner' => $getOwnerID,
+        'keitaro_comp_id' => $request->keitaroID,
+        'token_fb' => $request->tokenFB,
+        'status_id' => 1,
+        'BillingInUse' => $request->BillingInUse
+        ]);
 
         
         // $storeAccounts = Accounts::where('account_name', $request->accountName);
@@ -137,15 +148,9 @@ class accountController extends Controller
         // $storeAccounts->status_id = 1;
         // $storeAccounts->save();
 
-         $storeAccounts = Accounts::where('account_name', $request->accountName)->update([
-        'account_name' => $request->accountName,
-        'acc_owner' => $dd,
-        'keitaro_comp_id' => $request->keitaroID,
-        'token_fb' => $request->tokenFB,
-        'status_id' => 1,
-        ]);
+      
         
-        $findIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
+        $getIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
         
        
         // $storeProxy = Proxy::find($proxyID);
@@ -158,13 +163,15 @@ class accountController extends Controller
         //$storeProxy = Proxy::where('id',$findIdAccount->acc_proxy_id)->get();
         
         
-        $storeProxy = Proxy::where('id',$findIdAccount[0]->acc_proxy_id)->update([
+        $storeProxy = Proxy::where('id',$getIdAccount[0]->acc_proxy_id)->update([
         'ip' => $request->proxyIP,
         'login' => $request->proxyLogin,
         'port' => $request->proxyPort,
         'password' => $request->proxyPassword,
         'proxy_type' => $request->proxyType,
         ]);
+
+        return response()->json(['success' => 'yay']);
 
     }
 
@@ -175,18 +182,17 @@ class accountController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy($name)
-    {   $findIdProxy = Accounts::where('account_name', $name)->get();
-
+    {   
+        $getIdProxy = Accounts::where('account_name', $name)->get();
+        
         $destroyAccount = Accounts::where('account_name', $name);
-        $destroyProxy = Proxy::where('id',$findIdProxy[0]->acc_proxy_id);
-        $findIdBM = Accounts::where('account_name',$name)->with('BusinessManager')->with('BusinessManager.ACT');
 
-            
-        $$findIdBM->delete();
+        $destroyProxy = Proxy::where('id', $getIdProxy[0]->acc_proxy_id);
+        
         $destroyProxy->delete();
         $destroyAccount->delete();
 
-        
+        return response()->json(['success' => 'yay']);
     }
 
 }
