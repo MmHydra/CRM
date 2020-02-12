@@ -32,6 +32,7 @@ class AddOndelete extends Migration
           
         });
     }
+
     /**
      * Reverse the migrations.
      *
@@ -39,6 +40,6 @@ class AddOndelete extends Migration
      */
     public function down()
     {
-        //
+    
     }
 }

@@ -62,10 +62,12 @@
   				<thead class="thead-dark">
     				<tr style="text-align: center;">
 				      <th scope="col">checkbox</th>
+				      <th scope="col">ID</th>
 				      <th scope="col">Аккаунт</th>
 				      <th scope="col">Владелец</th>
 				      <th scope="col">Бизнес-менеджеры   Акт/Бан</th>
 				      <th scope="col">Статус аккаунта</th>
+				      <th scope="col">Использовать биллинг</th>
 				      <th scope="col">Действия</th>
 				      </tr>				  
 				  </thead>
@@ -74,6 +76,7 @@
 				      @foreach($array_Data_Accounts as $Data_Accounts)
 				      <tr class="rows">
 				      <td><input class="_checkbox" type="checkbox"unchecked style=" transform:scale(1.5);"></td>
+				      <td class="account_IDs" id="accountIDTable">{{$Data_Accounts->id}}</td>
 				      <td class="account_names" id="accountNameTable">{{$Data_Accounts->account_name}}</td>
 				      <td class="owners">{{$Data_Accounts->owners->name}}</td>
 
@@ -90,11 +93,21 @@
 				  	  			@endif
 					  </td>
 
-					
+						<td></td>
 					  
-					 
+					 	<td>
+				  	  									  
+				  	  			@if($Data_Accounts->BillingInUse == 1)
+				  	  			<input disabled class="_billingInUse" type="checkbox"checked style=" transform:scale(1.5);"></td>	 
+				  	  			@else
+				  	  			<input disabled class="_billingInUse" type="checkbox"unchecked style=" transform:scale(1.5);"></td>
+				  	  			@endif 	  							  	  	 		
+				  	  			
+				  	  	</td>
 
-				  	 <td></td>
+				  	  			
+				  	  			
+				  	 	
 				      
 				      <td>
 				            <div class="_bottom-group" style="padding-right:15px; text-align: center;  height: 7em;">
@@ -168,7 +181,9 @@
 		 <h4 class="modal-title" style="display: flex; flex-direction: row">Создание аккаунта</h4>
      </div>
 		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formAccountProxy">
+		
 		  <div class="form-group row">
+		  	 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Имя аккаунта</label>
 		    <div class="col-sm-6">
 		      <input maxlength="50" name="accountName" type="text" class="form-control form-control _accountFormInputs" id="colFormLabelSm" placeholder="">
@@ -179,12 +194,13 @@
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Владелец</label>
 		    <div class="col-sm-6">
 		      <select class="custom-select mr" id="selectOwners">
-		        <option selected>Выберите владельца</option>
+		        
 		        
 		      </select>
 		    </div>
 		  </div>
 		  <div class="form-group row">
+
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Keitaro id</label>
 		    <div class="col-sm-6">
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="keitaroID">
@@ -196,6 +212,14 @@
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
 		    </div>
 		  </div>
+		   <div class="form-group row">
+		  	 
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Использовать биллинг</label>
+		    <div class="col-sm-6">
+		      <input type="hidden" name="status" value="0">
+		      <input  name="BillingInUse" type="checkbox" style="height: 100%; width: 1.5em;" class=" checkbox _accountFormInputs" id="colFormLabelSm" placeholder="" value="1">
+		    </div>
+		  </div> 
 		
 		<div class="modal-header">
 		  <h4 class="modal-title" style="display: flex; flex-direction: row">Создание proxy</h4>
@@ -235,7 +259,7 @@
 		
 		<div class="modal-footer _footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-	        <button type="button" class="btn btn-primary" onclick="submitForm()">Применить</button>
+	        <button type="button" class="btn btn-primary" onclick="submitFormStore()">Применить</button>
       </div>
 	</div>
 	</div>	
@@ -248,8 +272,14 @@
 		 <h4 class="modal-title" style="display: flex; flex-direction: row">Редактирование аккаунта</h4>
      </div>
 		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formAccountProxyEdit">
+			<div class="form-group row">
+			<label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">ID аккаунта</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _accountFormInputs" id="accountID" placeholder="" name="accountID" disabled>
+		    </div>
+		    </div>
 		  <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Имя аккаунта</label>
+		  	<label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Имя аккаунта</label>
 		    <div class="col-sm-6">
 		      <input maxlength="50" name="accountName" type="text" class="form-control form-control _accountFormInputs" id="colFormLabelSm" placeholder="">
 		    </div>
@@ -276,6 +306,14 @@
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
 		    </div>
 		  </div>
+		    <div class="form-group row">
+		  	 
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Использовать биллинг</label>
+		    <div class="col-sm-6">
+		      
+		      <input  name="BillingInUse" type="checkbox" style="height: 100%; width: 1.5em;" class=" checkbox " id="colFormLabelSm" placeholder="" value="1">
+		    </div>
+		  </div> 
 		
 		<div class="modal-header">
 		  <h4 class="modal-title" style="display: flex; flex-direction: row">Редактирование прокси</h4>
@@ -315,7 +353,7 @@
 		
 		<div class="modal-footer _footer">
 	        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
-	        <button type="button" class="btn btn-primary" onclick="submitForm()">Применить</button>
+	        <button type="button" class="btn btn-primary" onclick="submitFormUpdate()">Применить</button>
       </div>
 	</div>
 	</div>	
@@ -335,7 +373,7 @@
       </div>
       <div class="modal-footer">
       	<div id="infoResponse"></div>
-        <button type="button" class="btn btn-primary" onclick="sendFormAccountsProxy.deleteAccount()">Да</button>
+        <button type="button" class="btn btn-primary" onclick="sendFormAccountsProxy.deleteGroupObject.submitDeleteAccount()">Да</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
       </div>
     </div>

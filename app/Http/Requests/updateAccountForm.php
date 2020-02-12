@@ -22,9 +22,9 @@ class updateAccountForm extends FormRequest
      * @return array
      */
     public function rules()
-    {  
+    {   //$id = $this->request->get('accountID');
         return [
-            'accountName' => 'Required',
+           'accountName' => 'Required|unique:Accounts,account_name,'.$this->request->get('accountID').',id',
             'ownerName' => 'Required',
             'keitaroID' => 'Required|integer',
             'tokenFB' => 'Required',
