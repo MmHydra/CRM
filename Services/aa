@@ -1,0 +1,11 @@
+<?php
+
+namespace Services\aa;
+
+class aa{
+    
+    public function ff(){
+        dd(1);
+    }
+
+}

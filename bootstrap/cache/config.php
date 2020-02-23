@@ -78,6 +78,7 @@
       'URL' => 'Illuminate\\Support\\Facades\\URL',
       'Validator' => 'Illuminate\\Support\\Facades\\Validator',
       'View' => 'Illuminate\\Support\\Facades\\View',
+      'BuildFacebookUrl' => 'App\\Facades\\BuildFacebookUrl',
     ),
   ),
   'auth' => 
@@ -547,6 +548,7 @@
       'maximum_number_of_collected_queries' => 200,
       'report_query_bindings' => true,
       'report_view_data' => true,
+      'grouping_type' => NULL,
     ),
     'send_logs_as_events' => true,
   ),
@@ -555,6 +557,7 @@
     'editor' => 'phpstorm',
     'theme' => 'light',
     'enable_share_button' => true,
+    'register_commands' => false,
     'ignored_solution_providers' => 
     array (
     ),
