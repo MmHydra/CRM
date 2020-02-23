@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTableAccount extends Migration
+class LogsTest extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,12 @@ class UpdateTableAccount extends Migration
      */
     public function up()
     {
-        Schema::table('Accounts', function($table) {
-        $table->char('token_fb', 250);
-        
-        });
+          Schema::create('logs_test', function (Blueprint $table) {
+            $table->bigIncrements('id');
+            $table->longText('log_text');
+            $table->timestamps();
+    
+         });
     }
 
     /**
@@ -26,6 +28,6 @@ class UpdateTableAccount extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('logs_test');
     }
 }

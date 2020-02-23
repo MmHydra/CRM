@@ -1,0 +1,41 @@
+<?php
+namespace App\Services;
+
+class BuildFacebookUrl {
+
+    
+    private $path = 'https://graph.facebook.com/v3.3/';
+
+    public function billing($data)
+    {   $path = 'https://graph.facebook.com/v3.0/act_?';
+        $params = [
+            'access_token' => $data['token_fb'],
+            'fields' => 'balance,adspaymentcycle,currency,account_status,disable_reason',
+        ];
+        $url = $this->$path . http_build_query($params);
+        return $url;
+    }
+
+    public function spend($data)
+    {   $path = 'https://graph.facebook.com/v3.0/act_?';
+        $params = [
+            'access_token' => $data['token_fb'],
+            'fields' => '',
+        ];
+        $url = $this->$path . http_build_query($params);
+        return $url;
+    }
+
+    public function getAct_id($data)
+    {   
+        $endpoint = 'me';
+        $params = [
+            'access_token' => $data['token_fb'],
+            'fields' => 'adaccounts{name,business,account_id,id},accounts{name,access_token}',
+        ];
+
+        $url = $this->$path . $endpoint . '?' . http_build_query($params);
+        return $url;
+    }
+
+}

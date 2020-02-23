@@ -9,6 +9,7 @@ use App\Http\Requests\updateAccountForm;
 use App\Owners;
 use App\Accounts;
 use App\Proxy;
+use Carbon\Carbon;
 
 class accountController extends Controller
 {
@@ -64,7 +65,9 @@ class accountController extends Controller
         $storeAccounts->token_fb = $request->tokenFB;
         $storeAccounts->acc_proxy_id = $getProxyID;
         $storeAccounts->status_id = 1;
-        $storeAccounts->BillingInUse =$request->BillingInUse;
+        $storeAccounts->BillingInUse = $request->BillingInUse;
+        $storeAccounts->status_id = $request->statusID;
+        $storeAccounts->updated_at = '2020-01-01';
         $storeAccounts->save();
 
         return response()->json(['success' => 'yay']);
@@ -136,7 +139,8 @@ class accountController extends Controller
         'keitaro_comp_id' => $request->keitaroID,
         'token_fb' => $request->tokenFB,
         'status_id' => 1,
-        'BillingInUse' => $request->BillingInUse
+        'BillingInUse' => $request->BillingInUse,
+        'status_id' => $request->statusID,
         ]);
 
         

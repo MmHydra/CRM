@@ -143,6 +143,7 @@ var sendFormAccountsProxy = {
           'tokenFB' : data.message.accountResponse[0].token_fb,
           'ownerName' : data.message.accountResponse[0].owners.name,
           'BillingInUse' : data.message.accountResponse[0].BillingInUse,
+          'statusID' : data.message.accountResponse[0].status_id,
           'proxyIP' : data.message.accountResponse[0].proxyes.ip,
           'proxyPort' : data.message.accountResponse[0].proxyes.port,
           'proxyLogin' : data.message.accountResponse[0].proxyes.login,
@@ -521,42 +522,3 @@ var filterObject = { filterOwnersArr : [],
     </tr>`).join('')}
   </tbody>`
 );  -->
-//передаем в контроллер имена аккаунтов
-
-//по аккаунтам забираем имена БМов
-
-//по бмам забираем имена рекламмных аккаунтов
-
-//отдаем записи в таблицу на морде
-
-Перем АссоциативныйМассив = ['0'=> Андрей1()=>бм1([имя])=>РА1([имя],[спенд])
-                                                          РА2([имя],[спенд])
-                                                           РА3([имя],[спенд])
-
-                                              бм2()=>РА1([имя],[спенд])
-                                                     РА2([имя],[спенд])
-                                                     РА3([имя],[спенд])
-
-                                              бм3()=>РА1([имя],[спенд])
-                                                     РА2([имя],[спенд])
-                                                     РА3([имя],[спенд])
-
-
-
-                             '1'=>Андрей1()=>бм1()=> РА1([имя],[спенд])
-                                                     РА2([имя],[спенд])
-                                                     РА3([имя],[спенд])
-
-                                            бм2()=>РА1([имя],[спенд])
-                                                     РА2([имя],[спенд])
-                                                     РА3([имя],[спенд])
-
-                                            бм3()=>РА1([имя],[спенд])
-                                                     РА2([имя],[спенд])
-                                                     РА3([имя],[спенд])
-                                  
-                           
-                                  
-foreach(массивСИменнамиАккаунтов as имяАккаунта){
-  
-}

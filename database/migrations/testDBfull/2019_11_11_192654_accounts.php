@@ -24,7 +24,6 @@ class Accounts extends Migration
             $table->integer('status_id');
             $table->BigInteger('acc_proxy_id')->unsigned();
             
-            
 
         });
     }

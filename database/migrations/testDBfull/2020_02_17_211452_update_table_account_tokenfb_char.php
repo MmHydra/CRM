@@ -4,21 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTableAccount extends Migration
+class UpdateTableAccountTokenfbChar extends Migration
 {
     /**
      * Run the migrations.
      *
      * @return void
      */
-    public function up()
+  public function up()
     {
-        Schema::table('Accounts', function($table) {
-        $table->char('token_fb', 250);
-        
-        });
+      
     }
-
     /**
      * Reverse the migrations.
      *

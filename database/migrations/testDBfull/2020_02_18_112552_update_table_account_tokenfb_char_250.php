@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class UpdateTableAccount extends Migration
+class UpdateTableAccountTokenfbChar250 extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class UpdateTableAccount extends Migration
     public function up()
     {
         Schema::table('Accounts', function($table) {
-        $table->char('token_fb', 250);
+        $table->string('token_fb', 250)->change();
         
         });
     }

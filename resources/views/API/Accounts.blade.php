@@ -93,7 +93,7 @@
 				  	  			@endif
 					  </td>
 
-						<td></td>
+						<td class="status_IDs">{{$Data_Accounts->status_id}}</td>
 					  
 					 	<td>
 				  	  									  
@@ -212,6 +212,12 @@
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
 		    </div>
 		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Status ID</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="statusID">
+		    </div>
+		  </div>
 		   <div class="form-group row">
 		  	 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Использовать биллинг</label>
@@ -304,6 +310,12 @@
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Token FB</label>
 		    <div class="col-sm-6">
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
+		    </div>
+		  </div>
+		   <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Status ID</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="statusID">
 		    </div>
 		  </div>
 		    <div class="form-group row">
