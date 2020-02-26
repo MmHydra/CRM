@@ -49,6 +49,8 @@ class SpendFacebookKeitaro extends Command
     
 
         $logErrors = [];
+		
+		$logAll = [];
         $validIDs = [];
         $invalidIDs = [];
         $data = Accounts::getDataForSpend();
@@ -63,10 +65,13 @@ class SpendFacebookKeitaro extends Command
         if(count($data) != 0)
         {   
             foreach ($data as $elem)
-           {           
-
-                $elem['updated_at'] = substr($elem['updated_at'], 0, 10);
-                $sinceDate = $elem['updated_at'];
+           {     
+				$currentRowId = $elem['id'];
+				$logAccount = [];		   
+				array_push($logAccount,[ 'id' => $currentRowId] );
+				//dd($elem['id']);
+               // $elem['updated_at'] = substr($elem['updated_at'], 0, 10);
+                $sinceDate = substr($elem['updated_at'], 0, 10);//substr('2020-02-24T00:00:00.000000Z', 0, 10);//$elem['updated_at'];
                 $path = 'https://graph.facebook.com/v5.0/';
                 $endpoint = 'me';
                 $params = [
@@ -85,24 +90,23 @@ class SpendFacebookKeitaro extends Command
                     $request = $client->get($url);
                     $responce = $request->getBody();
                     $responce = json_decode($responce->getContents());
-                    if(isset($responce->error)){
-                        array_push($invalidIDs, $elem['id']);
-                        array_push($logErrors, [$elem['id'] => $responce->error->message]);
-
+					if(isset($responce->error)){
+                        array_push($invalidIDs, $currentRowId);
+                        //array_push($logErrors, [$elem['id'] => $responce->error->message]);
+						array_push($logAccount,[ 'ErrorMsg' => $responce->error->message] );
+						array_push($logAll,$logAccount);
                         continue;
                        
                     }
-                    else
-                    {
-                        array_push($validIDs, $elem['id']);
-                    }
+
                 
 
-                $answer = (array)$responce;
+                 $answer = (array)$responce;
                
                 $accounts = ((array)$answer["adaccounts"])['data'];
                 $adsets = [];
                 $adsetsCurency = [];
+				$i=0;
                 foreach($accounts as $act_id)
                 {
                     //dd(1234, $invalidIDs, $logErrors);
@@ -115,14 +119,27 @@ class SpendFacebookKeitaro extends Command
                     $request = $client->get($adsets_dirty_url);
                     $responce = $request->getBody();
                     $responce = $responce->getContents();
-
-                    $adsetAnswer = json_decode($responce);
-                    $adsetsCurencyID = ['adset_id' => $adsetAnswer->data[0]->id, 'curency' => $act_id->currency];
+					$adsetAnswer = json_decode($responce);
+					if(isset($answer->error)){
+                        array_push($invalidIDs, $currentRowId);
+                        //array_push($logErrors, [$elem['id'] => $responce->error->message]);
+						array_push($logAccount,[ 'ErrorMsg' => $answer->error->message] );
+						array_push($logAll,$logAccount);
+                        continue 2;
+                       
+                    }
+                    //if($i++ == 1)dd($adsetAnswer);
+                    /* $adsetsCurencyID = ['adset_id' => $adsetAnswer->data[0]->id, 'curency' => $act_id->currency];
                     //dd($adsetsCurencyID);
                     $adsetsID  = $adsetAnswer->data[0]->id;
-
-                    array_push($adsetsCurency, $adsetsCurencyID);
-                    array_push($adsets, $adsetsID);
+					array_push($adsetsCurency, $adsetsCurencyID);
+                    array_push($adsets, $adsetsID); */
+					foreach($adsetAnswer->data as $adsetsIDs){
+						array_push($adsetsCurency, ['adset_id' => $adsetsIDs->id, 'curency' => $act_id->currency]);
+						array_push($adsets,$adsetsIDs->id);
+						//array_merge($adsetsID,$adsetsIDs->id);
+					}
+                    
                     
                     
 
@@ -138,17 +155,28 @@ class SpendFacebookKeitaro extends Command
                     $endpoint = strval($adsetDataElem['adset_id']) . '/insights';
                     //dd($adsetDataElem->id);
                     $params = [
-                        'access_token' => $elem,
+                        'access_token' => $elem['token_fb'],
                         'fields' => 'spend',
                         'time_range' => ['since' => $sinceDate, 'until' => $untilDate ],
                         'time_increment' => '1'
                     ];
+					//array_push($logAccount,$params);
                     $insights_dirty_url = $path . $endpoint . '/insights' . '?' . http_build_query($params);
-
+					//array_push($logAccount,$insights_dirty_url);
                     $request = $client->get($insights_dirty_url);
                     $responce = $request->getBody();
                     $responce = $responce->getContents();
+					
+					//dd($responce);
                     $answer = (array)json_decode($responce);
+					if(isset($answer['error'])){
+                        array_push($invalidIDs, $currentRowId);
+                        //array_push($logErrors, [$elem['id'] => $responce->error->message]);
+						array_push($logAccount,[ 'ErrorMsg' => $answer['error']->message] );
+						array_push($logAll,$logAccount);
+                        continue 2;
+                       
+                    }
                     //dd($answer);
                     //array_push($insights, array_merge($answer, ['currency' => $act_id->currency],['adset_id' => $adsetDataElem->id]));
                     array_push($insights, array_merge($answer, $adsetDataElem));
@@ -156,7 +184,10 @@ class SpendFacebookKeitaro extends Command
                     
 
                 }
-                    
+				
+				
+                array_push($logAccount,[ 'insights' => $insights] );    
+				//dd($insights);
                        
                     
 
@@ -189,7 +220,7 @@ class SpendFacebookKeitaro extends Command
                         $responce = $request->getBody();
                         $responce = $responce->getContents();
                         $keitaroCampaigns = json_decode($responce)->rows;
-
+						array_push($logAccount,[ 'keitaroCampaigns' => json_encode($keitaroCampaigns)] ); 
                         foreach ($insights as $elem) 
                         {   //dd($elem);
                             $keitaro_curency = $elem['curency'];
@@ -219,19 +250,23 @@ class SpendFacebookKeitaro extends Command
                                     //$responce = $responce->getContents();
                                 }
                             }
-                        }           
-        
+                        } 
+				array_push($logAccount,[ 'isValidToken' => '1'] );
+				//dd($elem);
+                array_push($validIDs, $currentRowId);						
+				array_push($logAll,$logAccount);
             }
         }
         else{
             die();
         }
       //  dd($insights, $responce);
-
+		
         $updateSpend = Accounts::updateDateSpend($validIDs, $untilDate);
         $updateInvalid = Accounts::updateStatus($invalidIDs, 0);
+		//dd($logAll);
         $createLog = new logs_test;
-        $createLog->log_text = json_encode($logErrors);
+        $createLog->log_text = json_encode($logAll);//json_encode($logErrors);
         $createLog->save();
     }   
 }

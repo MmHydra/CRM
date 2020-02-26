@@ -141,6 +141,7 @@ class accountController extends Controller
         'status_id' => 1,
         'BillingInUse' => $request->BillingInUse,
         'status_id' => $request->statusID,
+		//'updated_at' => false,
         ]);
 
         

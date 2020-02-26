@@ -11,13 +11,15 @@ use App\Accounts;
 use GuzzleHttp\Client;
 use App\logs_test;
 
-
+use App\Console\Commands\SpendFacebookKeitaro;
 
 
 class IndexController extends Controller
 {
 	  public function index()
 	  {	
+				
+	    
         $logErrors = [];
         $validIDs = [];
         $invalidIDs = [];
@@ -228,9 +230,10 @@ class IndexController extends Controller
 		 }
 		 	public function GETCONT()
 		 	{	
-		 		$aa = new aa;
-                dd($aa);
-                		 		//$handler->gg();
+		 		$bardak = new SpendFacebookKeitaro;
+				
+				$bardak->handle();
+				
 
 		 	}
 

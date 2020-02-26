@@ -282,7 +282,7 @@ var sendFormAccountsProxy = {
       var url = '';
       var method = 'GET';
       elem = $(elem).parents("td").siblings(".account_names").text();
-      url = "/accounts/"+ elem +"/edit";
+      url = "accounts/"+ elem +"/edit";
       sendFormAccountsProxy.EditAccountProxy(elem, url, method);
   }   
 
@@ -291,7 +291,7 @@ var sendFormAccountsProxy = {
       var url = '';
       var method = 'POST';
       elem = $(elem).parent("div").siblings("form").attr("id");
-      url = '/accounts/' 
+      url = 'accounts' 
     sendFormAccountsProxy.submitFormAccountProxy(elem, url, method);
   }
 
@@ -301,7 +301,7 @@ var sendFormAccountsProxy = {
       var url = '';
       var method = 'PATCH';
       elem = $(elem).parent("div").siblings("form").attr("id");
-      url ='/accounts/' + elem;
+      url ='accounts/' + elem;
       console.log(url);
     sendFormAccountsProxy.submitFormAccountProxy(elem, url, method);
   }
@@ -311,7 +311,7 @@ var sendFormAccountsProxy = {
     var url = '';
     var method = 'DELETE';
     elem = $(elem).parents("td").siblings(".account_names").text();
-    sendFormAccountsProxy.deleteGroupObject.url = '/accounts/' + elem;
+    sendFormAccountsProxy.deleteGroupObject.url = 'accounts/' + elem;
     sendFormAccountsProxy.deleteGroupObject.method = method;
     sendFormAccountsProxy.deleteGroupObject.elem = elem;
     sendFormAccountsProxy.deleteGroupObject.showModalDelete();

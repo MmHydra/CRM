@@ -186,7 +186,7 @@
 		  	 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Имя аккаунта</label>
 		    <div class="col-sm-6">
-		      <input maxlength="50" name="accountName" type="text" class="form-control form-control _accountFormInputs" id="colFormLabelSm" placeholder="">
+		      <input maxlength="50" name="accountName" value="1" type="text" class="form-control form-control _accountFormInputs" id="colFormLabelSm" placeholder="">
 		    </div>
 		  </div>
 		 
@@ -203,19 +203,19 @@
 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Keitaro id</label>
 		    <div class="col-sm-6">
-		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="keitaroID">
+		      <input type="text" class="form-control _accountFormInputs" value="1" id="colFormLabelLg" placeholder="" name="keitaroID">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Token FB</label>
 		    <div class="col-sm-6">
-		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
+		      <input type="text"  class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="tokenFB">
 		    </div>
 		  </div>
 		  <div class="form-group row">
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Status ID</label>
 		    <div class="col-sm-6">
-		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="statusID">
+		      <input type="text" value="1" class="form-control _accountFormInputs" value="1" id="colFormLabelLg" placeholder="" name="statusID">
 		    </div>
 		  </div>
 		   <div class="form-group row">
@@ -233,31 +233,31 @@
 		<div class="form-group row"  style="margin-top: 10px;">
 		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
 		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" id="proxyIP" name="proxyIP" placeholder="">
+		      <input  class="form-control _accountFormInputs" value="1" id="proxyIP" name="proxyIP" placeholder="">
 		    </div>
 		 </div>
 		 <div class="form-group row"  style="margin-top: 10px;">
 		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy port</label>
 		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" name="proxyPort" placeholder="">
+		      <input  class="form-control _accountFormInputs" name="proxyPort" value="1"  placeholder="">
 		    </div>
 		 </div>
 		 <div class="form-group row">
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Proxy Логин</label>
 		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs" id="colFormLabelLg" name="proxyLogin" placeholder="" type="text">
+		      <input class="form-control _accountFormInputs" id="colFormLabelLg" value="1"  name="proxyLogin" placeholder="" type="text">
 		    </div>
 		  </div>
 		  <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label" >Proxy Пароль</label>
+		    <label for="colFormLabelSm" class="col-sm-2  col-form-label col-form-label" >Proxy Пароль</label>
 		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" name="proxyPassword" placeholder="" type="text">
+		      <input  class="form-control _accountFormInputs" value="1" name="proxyPassword" placeholder="" type="text">
 		    </div>
 		  </div>
 		   <div class="form-group row">
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Тип Proxy</label>
 		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder="" type="text">
+		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder="" value="1" type="text">
 		    </div>
 		  </div>
 		  <div class="errorsOutput" style="width:70%;display: none; border: 1px dotted red;margin-left:5px;"></div>

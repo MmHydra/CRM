@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Accounts extends Model
 {
     protected $table = 'Accounts';
-
+	public $timestamps = false;
      public function owners()
     {
        return $this->belongsTo('App\Owners', 'acc_owner');
