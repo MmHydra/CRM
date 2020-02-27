@@ -94,7 +94,9 @@ var sendFormAccountsProxy = {
 
   
 
-    submitFormAccountProxy : function(elem, url, method){  
+    submitFormAccountProxy : function(elem, url, method){ 
+      $("#modalUpdateAccounts")
+       
        var urlRequest = url;
        var method = method;    
        var data = {};
@@ -123,6 +125,7 @@ var sendFormAccountsProxy = {
       }
     },
     EditAccountProxy : function(elem, url, method){
+      $("#modalUpdateAccounts input").val('');
       var url = url;
       var method = method;
       var data;
@@ -136,6 +139,7 @@ var sendFormAccountsProxy = {
         arrOwners.push(data.message.ownersResponse[key].name);      
         }
         $('#selectOwnersEdit').append(arrOwners.map(n=>`<option name="ownerName" class="_accountFormInputOwner">${n}</option>`));
+       
         formNameValue = {
           'accountID' : data.message.accountResponse[0].id,
           'accountName' : data.message.accountResponse[0].account_name,
@@ -144,13 +148,18 @@ var sendFormAccountsProxy = {
           'ownerName' : data.message.accountResponse[0].owners.name,
           'BillingInUse' : data.message.accountResponse[0].BillingInUse,
           'statusID' : data.message.accountResponse[0].status_id,
-          'proxyIP' : data.message.accountResponse[0].proxyes.ip,
-          'proxyPort' : data.message.accountResponse[0].proxyes.port,
-          'proxyLogin' : data.message.accountResponse[0].proxyes.login,
-          'proxyPassword' : data.message.accountResponse[0].proxyes.password,
-          'proxyType' : data.message.accountResponse[0].proxyes.proxy_type
+         
         };
-        for(key in formNameValue){
+        if(data.message.accountResponse[0].proxyes !== null){
+          
+          formNameValue.proxyIP = data.message.accountResponse[0].proxyes.ip;
+          formNameValue.proxyPort = data.message.accountResponse[0].proxyes.port;
+          formNameValue.proxyLogin = data.message.accountResponse[0].proxyes.login;
+          formNameValue.proxyPassword = data.message.accountResponse[0].proxyes.password;
+          formNameValue.proxyType = data.message.accountResponse[0].proxyes.proxy_type;
+        }
+        console.log(formNameValue);
+          for(key in formNameValue){
           if(key == 'ownerName'){
             console.log(formNameValue[key]);
             $('#selectOwnersEdit :contains('+formNameValue[key]+')').attr("selected", "selected");
@@ -160,10 +169,15 @@ var sendFormAccountsProxy = {
               console.log( $('#modalUpdateAccounts').find('.checkbox'));
               $('#modalUpdateAccounts').find('.checkbox').prop('checked', true);
             }
+            else{
+              $('#modalUpdateAccounts').find('.checkbox').prop('checked', false);
+            }
+
           }
           else{
-            $("#modalUpdateAccounts").find("[name="+key+"]").val(formNameValue[key]);
+              $("#modalUpdateAccounts").find("[name="+key+"]").val(formNameValue[key]);
           }
+
         }
         $('#modalUpdateAccounts').modal('show');   
       }
@@ -316,6 +330,30 @@ var sendFormAccountsProxy = {
     sendFormAccountsProxy.deleteGroupObject.elem = elem;
     sendFormAccountsProxy.deleteGroupObject.showModalDelete();
   }
+
+  function recieveAccountsFromFBToll(){
+        fetch('/getAccountsFBtool', {
+           headers: {
+           'Accept': 'application/json',
+           'Content-Type': 'application/json',
+           "X-CSRF-Token": token
+           },
+           method: 'GET',
+           credentials: "same-origin",
+        })
+        .then(function(response){
+          //status = response.status;
+          status = response.status;
+          return response.json();
+        })
+        .then(function(response){
+          message = response;
+          console.log(message);
+          alert('Аккаунтов добавлено ' + message.newAccounts + '\r\n'+ 'Аккаунтов обновлено ' + message.updatedAccounts +  '\r\n' + 'Страница будет перезагружена');
+          window.location = 'API';
+        })     
+  }
+  
 
 
 

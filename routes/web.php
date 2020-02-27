@@ -44,6 +44,8 @@ Route::group(['as' => 'API', 'namespace'=>'API'], function(){
 
 	Route::resource('accounts', 'accountController');
 
+    Route::get('/getAccountsFBtool', 'DataPanel@getAccountsFBtool');
+
 });
 
 

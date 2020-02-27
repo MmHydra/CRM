@@ -54,7 +54,9 @@
 
 		  		
 			</div>
+
 			<button type="button" id = "modalCreateAccountsShow" onclick = "openFormAccountProxy()" class="btn btn-primary btn-lg" style="float: right; margin-top:  -0.625em">Создать аккаунт</button>
+			<button type="button" id = "recieveAccountsFromFBToll" onclick = "recieveAccountsFromFBToll()" class="btn btn-primary btn-lg" style="float: right; margin-right: 10px;background-color:brown;border-color: brown; margin-top:  -0.625em">Получить аккаунты из fbtool</button>
 	
 
 <div class="_table-acc">
@@ -357,7 +359,7 @@
 		   <div class="form-group row">
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label" >Тип Proxy</label>
 		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder="" value="123" type="text">
+		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder=""  type="text">
 		    </div>
 		  </div>
 		  <div class="errorsOutput" style="width:70%;display: none; border: 1px dotted red;margin-left:5px;"></div>

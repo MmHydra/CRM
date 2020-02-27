@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Accounts extends Model
 {
+
     protected $table = 'Accounts';
+    protected $fillable = ['account_name', 'token_fb','updated_at'];
 	public $timestamps = false;
+    
+
      public function owners()
     {
        return $this->belongsTo('App\Owners', 'acc_owner');

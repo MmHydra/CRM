@@ -42,17 +42,18 @@ class accountController extends Controller
      */
     public function store(storeAccountForm $request)
     {   
-        //$this->validate( $request, $rules, $request->messages());
+        $getProxyID;
 
-        $storeProxy = new Proxy;
-        $storeProxy->ip = $request->proxyIP;
-        $storeProxy->login = $request->proxyLogin;
-        $storeProxy->port = $request->proxyPort;
-        $storeProxy->password = $request->proxyPassword;
-        $storeProxy->proxy_type = $request->proxyType;
-        $storeProxy->save();
-        $getProxyID = $storeProxy->latest()->first()->id;
-        
+        if($request->proxyIP !== null){
+            $storeProxy = new Proxy;
+            $storeProxy->ip = $request->proxyIP;
+            $storeProxy->login = $request->proxyLogin;
+            $storeProxy->port = $request->proxyPort;
+            $storeProxy->password = $request->proxyPassword;
+            $storeProxy->proxy_type = $request->proxyType;
+            $storeProxy->save();
+            $getProxyID = $storeProxy->latest()->first()->id;
+        }
 
 
         $account_Owner = Owners::where('name', $request->ownerName)->get();
@@ -63,7 +64,11 @@ class accountController extends Controller
         $storeAccounts->acc_owner = $getOwnerID;
         $storeAccounts->keitaro_comp_id = $request->keitaroID;
         $storeAccounts->token_fb = $request->tokenFB;
+
+        if($request->proxyIP !== null){
         $storeAccounts->acc_proxy_id = $getProxyID;
+        }
+
         $storeAccounts->status_id = 1;
         $storeAccounts->BillingInUse = $request->BillingInUse;
         $storeAccounts->status_id = $request->statusID;
@@ -144,37 +149,17 @@ class accountController extends Controller
 		//'updated_at' => false,
         ]);
 
-        
-        // $storeAccounts = Accounts::where('account_name', $request->accountName);
-        // $storeAccounts->account_name = $request->accountName;
-        // $storeAccounts->acc_owner = $dd;
-        // $storeAccounts->keitaro_comp_id = $request->keitaroID;
-        // $storeAccounts->token_fb = $request->tokenFB;
-        // $storeAccounts->status_id = 1;
-        // $storeAccounts->save();
-
-      
-        
-        $getIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
-        
-       
-        // $storeProxy = Proxy::find($proxyID);
-        // $storeProxy->ip = $request->proxyIP;
-        // $storeProxy->login = $request->proxyLogin;
-        // $storeProxy->port = $request->proxyPort;
-        // $storeProxy->password = $request->proxyPassword;
-        // $storeProxy->proxy_type = $request->proxyType;
-        // $storeProxy->save();
-        //$storeProxy = Proxy::where('id',$findIdAccount->acc_proxy_id)->get();
-        
-        
-        $storeProxy = Proxy::where('id',$getIdAccount[0]->acc_proxy_id)->update([
-        'ip' => $request->proxyIP,
-        'login' => $request->proxyLogin,
-        'port' => $request->proxyPort,
-        'password' => $request->proxyPassword,
-        'proxy_type' => $request->proxyType,
-        ]);
+        if($request->proxyIP !== null){     
+            $getIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
+                    
+            $storeProxy = Proxy::where('id',$getIdAccount[0]->acc_proxy_id)->update([
+            'ip' => $request->proxyIP,
+            'login' => $request->proxyLogin,
+            'port' => $request->proxyPort,
+            'password' => $request->proxyPassword,
+            'proxy_type' => $request->proxyType,
+            ]);
+        }
 
         return response()->json(['success' => 'yay']);
 
