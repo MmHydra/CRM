@@ -10,7 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::group(['middleware' => ['auth']], function() {
 Route::get('/', function () {
     return view('welcome');
 });
@@ -37,18 +37,23 @@ Route::get('/getcontents', 'IndexController@GETCONT');
 ////////////////////////////////////////////////////////////////////////////
 
 
-Route::group(['as' => 'API', 'namespace'=>'API'], function(){
-	Route::get('/API', 'DataPanel@index');
-	
-	Route::post('/getADSs', 'DataPanel@getADSs');
+	Route::group(['as' => 'API', 'namespace'=>'API'], function(){
+		Route::get('/API', 'DataPanel@index');
+		
+		Route::post('/getADSs', 'DataPanel@getADSs');
 
-	Route::resource('accounts', 'accountController');
+		Route::resource('accounts', 'accountController');
 
-    Route::get('/getAccountsFBtool', 'DataPanel@getAccountsFBtool');
+		Route::get('/getAccountsFBtool', 'DataPanel@getAccountsFBtool');
 
+	});
 });
 
 
 
 
 
+
+Auth::routes(['register' => false]);
+//Auth::routes();
+Route::get('/home', 'HomeController@index')->name('home');

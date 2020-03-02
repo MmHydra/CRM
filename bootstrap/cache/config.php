@@ -10,7 +10,7 @@
     'locale' => 'en',
     'fallback_locale' => 'en',
     'faker_locale' => 'en_US',
-    'key' => 'base64:qwrD50w08BVLod/hMy3gpL1fcr9aAmWn6MDkDvnHXkc=',
+    'key' => 'base64:kDadp/PcuNPIwr1UeuTJIn0b84P9Xt1DY1PxuzTywUg=',
     'cipher' => 'AES-256-CBC',
     'providers' => 
     array (
@@ -78,7 +78,6 @@
       'URL' => 'Illuminate\\Support\\Facades\\URL',
       'Validator' => 'Illuminate\\Support\\Facades\\Validator',
       'View' => 'Illuminate\\Support\\Facades\\View',
-      'BuildFacebookUrl' => 'App\\Facades\\BuildFacebookUrl',
     ),
   ),
   'auth' => 
@@ -174,7 +173,7 @@
       'file' => 
       array (
         'driver' => 'file',
-        'path' => '/home/vagrant/first/storage/framework/cache/data',
+        'path' => '/home/admin/web/185.233.118.156/public_html/storage/framework/cache/data',
       ),
       'memcached' => 
       array (
@@ -224,7 +223,7 @@
       array (
         'driver' => 'sqlite',
         'url' => NULL,
-        'database' => 'test',
+        'database' => 'api',
         'prefix' => '',
         'foreign_key_constraints' => true,
       ),
@@ -232,11 +231,11 @@
       array (
         'driver' => 'mysql',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => 'localhost',
         'port' => '3306',
-        'database' => 'test',
-        'username' => 'homestead',
-        'password' => 'secret',
+        'database' => 'api',
+        'username' => 'root',
+        'password' => 'KrM9B5ltu5',
         'unix_socket' => '',
         'charset' => 'utf8mb4',
         'collation' => 'utf8mb4_unicode_ci',
@@ -252,11 +251,11 @@
       array (
         'driver' => 'pgsql',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => 'localhost',
         'port' => '3306',
-        'database' => 'test',
-        'username' => 'homestead',
-        'password' => 'secret',
+        'database' => 'api',
+        'username' => 'root',
+        'password' => 'KrM9B5ltu5',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -267,11 +266,11 @@
       array (
         'driver' => 'sqlsrv',
         'url' => NULL,
-        'host' => '127.0.0.1',
+        'host' => 'localhost',
         'port' => '3306',
-        'database' => 'test',
-        'username' => 'homestead',
-        'password' => 'secret',
+        'database' => 'api',
+        'username' => 'root',
+        'password' => 'KrM9B5ltu5',
         'charset' => 'utf8',
         'prefix' => '',
         'prefix_indexes' => true,
@@ -313,12 +312,12 @@
       'local' => 
       array (
         'driver' => 'local',
-        'root' => '/home/vagrant/first/storage/app',
+        'root' => '/home/admin/web/185.233.118.156/public_html/storage/app',
       ),
       'public' => 
       array (
         'driver' => 'local',
-        'root' => '/home/vagrant/first/storage/app/public',
+        'root' => '/home/admin/web/185.233.118.156/public_html/storage/app/public',
         'url' => 'http://localhost/storage',
         'visibility' => 'public',
       ),
@@ -364,13 +363,13 @@
       'single' => 
       array (
         'driver' => 'single',
-        'path' => '/home/vagrant/first/storage/logs/laravel.log',
+        'path' => '/home/admin/web/185.233.118.156/public_html/storage/logs/laravel.log',
         'level' => 'debug',
       ),
       'daily' => 
       array (
         'driver' => 'daily',
-        'path' => '/home/vagrant/first/storage/logs/laravel.log',
+        'path' => '/home/admin/web/185.233.118.156/public_html/storage/logs/laravel.log',
         'level' => 'debug',
         'days' => 14,
       ),
@@ -422,8 +421,8 @@
     'port' => '2525',
     'from' => 
     array (
-      'address' => 'hello@example.com',
-      'name' => 'Example',
+      'address' => NULL,
+      'name' => 'Laravel',
     ),
     'encryption' => NULL,
     'username' => NULL,
@@ -434,7 +433,7 @@
       'theme' => 'default',
       'paths' => 
       array (
-        0 => '/home/vagrant/first/resources/views/vendor/mail',
+        0 => '/home/admin/web/185.233.118.156/public_html/resources/views/vendor/mail',
       ),
     ),
     'log_channel' => NULL,
@@ -513,7 +512,7 @@
     'lifetime' => '120',
     'expire_on_close' => false,
     'encrypt' => false,
-    'files' => '/home/vagrant/first/storage/framework/sessions',
+    'files' => '/home/admin/web/185.233.118.156/public_html/storage/framework/sessions',
     'connection' => NULL,
     'table' => 'sessions',
     'store' => NULL,
@@ -533,9 +532,9 @@
   array (
     'paths' => 
     array (
-      0 => '/home/vagrant/first/resources/views',
+      0 => '/home/admin/web/185.233.118.156/public_html/resources/views',
     ),
-    'compiled' => '/home/vagrant/first/storage/framework/views',
+    'compiled' => '/home/admin/web/185.233.118.156/public_html/storage/framework/views',
   ),
   'flare' => 
   array (
