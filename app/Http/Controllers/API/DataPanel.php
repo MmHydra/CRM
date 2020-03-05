@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Accounts;
+use App\Proxy;
 use App\Owners;
 use App\BusinessManager;
 
@@ -55,6 +56,7 @@ class DataPanel extends Controller
          $request = $client->get("https://fbtool.pro/api/get-accounts?key=iARAAWTY3uWAml7cexh9Q57n5kybMp3t");
          $responce = $request->getBody();
          $responce = get_object_vars(json_decode($responce->getContents()));
+         dd($responce);
          //dd(array_column($dataAccounts, 'token_fb'), $responce);
 		foreach($responce as $elem){
 			$elem = (array)$elem;
@@ -94,5 +96,12 @@ class DataPanel extends Controller
 
 
 		
+	}
+
+	public function getProxy()
+	{
+		$dataProxy = Proxy::all();
+		
+		return response()->json($dataProxy);
 	}
 }

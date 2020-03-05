@@ -2,10 +2,11 @@
 @section('body')
 <h1>Аккаунты</h1>
 <div class="col-md-12">
-<ul class="nav nav-pills nav-justified"  style="font-size: 16px; margin-bottom: 20px; background-color: #AFEEEE;">
-  <li class="active nav-item"><a class="nav-link" data-toggle="tab" onclick="showTableAccounts()">Профили</a></li>
-  <li class="active nav-item"><a class="nav-link" onclick="showTableADS()">Рекламные Аккаунты</a></li>
-  <li class="disabled nav-item"><a class="nav-link">статистика</a></li>
+<ul class="nav nav-pills nav-justified _tab"  style="font-size: 16px; margin-bottom: 20px; background-color: #AFEEEE;">
+  <li class=" nav-item"><a class="nav-link active" data-toggle="tab" onclick="showTableAccounts()">Профили</a></li>
+  <li class=" nav-item"><a class="nav-link " onclick="showTableProxy()">Proxy</a></li>
+  <li class=" nav-item"><a class="nav-link " onclick="showTableADS()">Рекламные Аккаунты</a></li>
+ 
 
 </ul>
 	<div id="table_accounts">
@@ -55,7 +56,7 @@
 		  		
 			</div>
 
-			<button type="button" id = "modalCreateAccountsShow" onclick = "openFormAccountProxy()" class="btn btn-primary btn-lg" style="float: right; margin-top:  -0.625em">Создать аккаунт</button>
+			<button type="button" id = "modalCreateAccountsShow" onclick = "openFormAccount()" class="btn btn-primary btn-lg" style="float: right; margin-top:  -0.625em">Создать аккаунт</button>
 			<button type="button" id = "recieveAccountsFromFBToll" onclick = "recieveAccountsFromFBToll()" class="btn btn-primary btn-lg" style="float: right; margin-right: 10px;background-color:brown;border-color: brown; margin-top:  -0.625em">Получить аккаунты из fbtool</button>
 	
 
@@ -113,8 +114,8 @@
 				      
 				      <td>
 				            <div class="_bottom-group" style="padding-right:15px; text-align: center;  height: 7em;">
-				      			<button type="button" class="btn btn-primary btn-sm" onclick = "openFormAccountProxyUpdate()">Редактировать</button>
-						  		<button type="button"  class="btn btn-secondary btn-sm" onclick = "openModalAccountProxyDelete()">Удалить</button>
+				      			<button type="button" class="btn btn-primary btn-sm" onclick = "openFormAccountUpdate()">Редактировать</button>
+						  		<button type="button"  class="btn btn-secondary btn-sm" onclick = "openModalAccountDelete()">Удалить</button>
 						    </div>
 					   </td> 
 					   </tr>
@@ -174,6 +175,38 @@
 							</table>
 			</div>				
 	</div>
+		<div id="div_table_proxy" style="display:none;">
+	
+		<div class="_filter_group">
+			<ul class="_filter_list" style="display:inline-block; list-style: none; padding-left: 0px;">
+				<li style="float: left; width:100px; border: 2px solid Yellow; margin-left: 15px;"><span>No use</span><button style="float:right;">X</button></li>
+				<li style="float: left; width:100px; border: 2px solid Yellow; margin-left: 15px;"><span>No use</span><button style="float:right;">X</button></li>
+				<li style="float: left; width:100px; border: 2px solid Yellow; margin-left: 15px;"><span>No use</span><button style="float:right;">X</button></li>
+			</ul>
+		</div>
+
+		<button type="button" id = "modalCreateAccountsShow" onclick = "openFormCreateProxy()" class="btn btn-primary btn-lg" style="float: right; margin-top:  -0.625em">Создать proxy</button>
+
+
+			<div class="_table_proxy" >
+				    	<table class="table table-striped" id="table_proxy">
+			  				<thead class="thead-dark">
+			    				<tr style="text-align: center;">
+							      <th scope="col">ID</th>
+							      <th scope="col">IP</th>
+							      <th scope="col">Порт</th>
+							      <th scope="col">Логин</th>
+							      <th scope="col">Пароль</th>
+							      <th scope="col">Действия</th>
+							    </tr>				  
+							</thead>
+							<!--   <tbody style="text-align: center;">
+							    
+							 
+							  </tbody> -->
+							</table>
+			</div>				
+	</div>
 	</div>
 	
 <div id="modalCreateAccounts" class="modal fade">
@@ -182,7 +215,7 @@
     <div class="modal-header">
 		 <h4 class="modal-title" style="display: flex; flex-direction: row">Создание аккаунта</h4>
      </div>
-		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formAccountProxy">
+		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formAccountCreate">
 		
 		  <div class="form-group row">
 		  	 
@@ -220,6 +253,18 @@
 		      <input type="text" value="1" class="form-control _accountFormInputs" value="1" id="colFormLabelLg" placeholder="" name="statusID">
 		    </div>
 		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _accountFormInputs" id="accountsProxyIPInputCreate" placeholder="" name="proxyIP">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">User Agent</label>
+		    <div class="col-sm-6">
+		      <textarea type="text" class="form-control _accountFormInputs" placeholder="" name="accountsUserAgent"></textarea>
+		    </div>
+		  </div>
 		   <div class="form-group row">
 		  	 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Использовать биллинг</label>
@@ -229,40 +274,8 @@
 		    </div>
 		  </div> 
 		
-		<div class="modal-header">
-		  <h4 class="modal-title" style="display: flex; flex-direction: row">Создание proxy</h4>
-        </div>
-		<div class="form-group row"  style="margin-top: 10px;">
-		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" value="1" id="proxyIP" name="proxyIP" placeholder="">
-		    </div>
-		 </div>
-		 <div class="form-group row"  style="margin-top: 10px;">
-		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy port</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" name="proxyPort" value="1"  placeholder="">
-		    </div>
-		 </div>
-		 <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Proxy Логин</label>
-		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs" id="colFormLabelLg" value="1"  name="proxyLogin" placeholder="" type="text">
-		    </div>
-		  </div>
-		  <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2  col-form-label col-form-label" >Proxy Пароль</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" value="1" name="proxyPassword" placeholder="" type="text">
-		    </div>
-		  </div>
-		   <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Тип Proxy</label>
-		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder="" value="1" type="text">
-		    </div>
-		  </div>
-		  <div class="errorsOutput" style="width:70%;display: none; border: 1px dotted red;margin-left:5px;"></div>
+		
+		  <div class="errorsOutput" style="width:70%;display: none; margin-left:5px;"></div>
 		</form>
 		
 		<div class="modal-footer _footer">
@@ -320,6 +333,18 @@
 		      <input type="text" class="form-control _accountFormInputs" id="colFormLabelLg" placeholder="" name="statusID">
 		    </div>
 		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _accountFormInputs" placeholder="" name="proxyIP" id="accountsProxyIPInputEdit">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">User Agent</label>
+		    <div class="col-sm-6">
+		      <textarea type="text" class="form-control _accountFormInputs" placeholder="" name="accountsUserAgent"></textarea>
+		    </div>
+		  </div>
 		    <div class="form-group row">
 		  	 
 		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Использовать биллинг</label>
@@ -329,40 +354,8 @@
 		    </div>
 		  </div> 
 		
-		<div class="modal-header">
-		  <h4 class="modal-title" style="display: flex; flex-direction: row">Редактирование прокси</h4>
-        </div>
-		<div class="form-group row"  style="margin-top: 10px;">
-		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" id="proxyIP" name="proxyIP" placeholder="">
-		    </div>
-		 </div>
-		 <div class="form-group row"  style="margin-top: 10px;">
-		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy port</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" name="proxyPort" placeholder="">
-		    </div>
-		 </div>
-		 <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Proxy Логин</label>
-		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs" id="colFormLabelLg" name="proxyLogin" placeholder="" type="text">
-		    </div>
-		  </div>
-		  <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Proxy Пароль</label>
-		    <div class="col-sm-6">
-		      <input  class="form-control _accountFormInputs" name="proxyPassword" placeholder="" type="text">
-		    </div>
-		  </div>
-		   <div class="form-group row">
-		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label" >Тип Proxy</label>
-		    <div class="col-sm-6">
-		      <input class="form-control _accountFormInputs"  name="proxyType" placeholder=""  type="text">
-		    </div>
-		  </div>
-		  <div class="errorsOutput" style="width:70%;display: none; border: 1px dotted red;margin-left:5px;"></div>
+		
+		  <div class="errorsOutput" style="width:70%;display: none; margin-left:5px;"></div>
 		</form>
 		
 		<div class="modal-footer _footer">
@@ -371,6 +364,122 @@
       </div>
 	</div>
 	</div>	
+</div>
+
+<div id="modalCreateProxy" class="modal fade">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" >
+    <div class="modal-header">
+		 <h4 class="modal-title" style="display: flex; flex-direction: row">Создание Proxy</h4>
+     </div>
+		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formProxyCreate">
+		  <div class="form-group row">
+		  	<label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" id="proxyIP" name="proxyIP" placeholder="">
+		    </div>
+		  </div>
+		 
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy port</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" name="proxyPort" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Proxy Логин</label>
+		    <div class="col-sm-6">
+		      <input class="form-control _proxyFormInputs" id="colFormLabelLg" name="proxyLogin" placeholder="" type="text">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Proxy Пароль</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" name="proxyPassword" placeholder="" type="text">
+		    </div>
+		  </div>
+		   <div class="errorsOutput" style="width:70%;display: none; margin-left:5px;"></div>
+		</form>
+		
+		<div class="modal-footer _footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+	        <button type="button" class="btn btn-primary" onclick="submitFormUpdateProxy()">Применить</button>
+      </div>
+	</div>
+	</div>
+
+</div>
+
+<div class="modal" id="modalDeleteAccount" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Вы действительно хотите удалить Аккаунт и связанные с ним Бмы и РА</p>
+      </div>
+      <div class="modal-footer">
+      	<div id="infoResponse"></div>
+        <button type="button" class="btn btn-primary" onclick="sendFormAccountsProxy.deleteGroupObjectAccount.submitDeleteAccount()">Да</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+												<!--PROXY-->
+<div id="modalUpdateProxy" class="modal fade">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" >
+    <div class="modal-header">
+		 <h4 class="modal-title" style="display: flex; flex-direction: row">Редактирование Proxy</h4>
+     </div>
+		<form style="margin-left: 10px; margin-right: 10px; margin-top: 10px;" id="formProxyEdit">
+			<div class="form-group row">
+			<label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">ID</label>
+		    <div class="col-sm-6">
+		      <input type="text" class="form-control _proxyFormInputs" id="proxyID" placeholder="" name="proxyID" disabled>
+		    </div>
+		    </div>
+		  <div class="form-group row">
+		  	<label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy IP</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" id="proxyIP" name="proxyIP" placeholder="">
+		    </div>
+		  </div>
+		 
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" type="text"  class="col-sm-2 col-form-label col-form-label">Proxy port</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" name="proxyPort" placeholder="">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label ">Proxy Логин</label>
+		    <div class="col-sm-6">
+		      <input class="form-control _proxyFormInputs" id="colFormLabelLg" name="proxyLogin" placeholder="" type="text">
+		    </div>
+		  </div>
+		  <div class="form-group row">
+		    <label for="colFormLabelSm" class="col-sm-2 col-form-label col-form-label">Proxy Пароль</label>
+		    <div class="col-sm-6">
+		      <input  class="form-control _proxyFormInputs" name="proxyPassword" placeholder="" type="text">
+		    </div>
+		  </div>
+		   <div class="errorsOutput" style="width:70%;display: none; margin-left:5px;"></div>
+		</form>
+		
+		<div class="modal-footer _footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+	        <button type="button" class="btn btn-primary" onclick="submitFormUpdateProxy()">Применить</button>
+      </div>
+	</div>
+	</div>
+
 </div>
 
 <div class="modal" id="modalDelete" tabindex="-1" role="dialog">
@@ -383,11 +492,11 @@
         </button>
       </div>
       <div class="modal-body">
-        <p>Вы действительно хотите удалить аккаунт и связанные с ним БМы</p>
+        <p>Вы действительно хотите удалить Proxy?</p>
       </div>
       <div class="modal-footer">
-      	<div id="infoResponse"></div>
-        <button type="button" class="btn btn-primary" onclick="sendFormAccountsProxy.deleteGroupObject.submitDeleteAccount()">Да</button>
+      	<div id="infoResponseProxy"></div>
+        <button type="button" class="btn btn-primary" onclick="sendFormAccountsProxy.deleteGroupObjectProxy.submitDeleteProxy()">Да</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
       </div>
     </div>

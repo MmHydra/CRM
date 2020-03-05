@@ -31,7 +31,8 @@ class accountController extends Controller
     public function create(request $request)
     {   
         $owners = Owners::all();
-        return response()->json($owners);
+        $proxy = Proxy::select('ip')->get();
+        return response()->json(array('owners' => $owners, 'proxy' => $proxy));
     }
 
     /**
@@ -42,37 +43,48 @@ class accountController extends Controller
      */
     public function store(storeAccountForm $request)
     {   
-        $getProxyID;
+        // $getProxyID;
 
-        if($request->proxyIP !== null){
-            $storeProxy = new Proxy;
-            $storeProxy->ip = $request->proxyIP;
-            $storeProxy->login = $request->proxyLogin;
-            $storeProxy->port = $request->proxyPort;
-            $storeProxy->password = $request->proxyPassword;
-            $storeProxy->proxy_type = $request->proxyType;
-            $storeProxy->save();
-            $getProxyID = $storeProxy->latest()->first()->id;
-        }
+        // if($request->proxyIP !== null){
+        //     $storeProxy = new Proxy;
+        //     $storeProxy->ip = $request->proxyIP;
+        //     $storeProxy->login = $request->proxyLogin;
+        //     $storeProxy->port = $request->proxyPort;
+        //     $storeProxy->password = $request->proxyPassword;
+        //     $storeProxy->proxy_type = $request->proxyType;
+        //     $storeProxy->save();
+        //     $getProxyID = $storeProxy->latest()->first()->id;
+        // }
 
 
         $account_Owner = Owners::where('name', $request->ownerName)->get();
         $getOwnerID = $account_Owner[0]->id;
+        if($request->proxyIP)
+        {
+            $current_Proxy_ID = Proxy::select('id')->where('ip', $request->proxyIP)->get();
+        }
+
         
+
         $storeAccounts = new Accounts;
         $storeAccounts->account_name = $request->accountName;
         $storeAccounts->acc_owner = $getOwnerID;
         $storeAccounts->keitaro_comp_id = $request->keitaroID;
         $storeAccounts->token_fb = $request->tokenFB;
 
-        if($request->proxyIP !== null){
-        $storeAccounts->acc_proxy_id = $getProxyID;
-        }
+        // if($request->proxyIP !== null){
+        // $storeAccounts->acc_proxy_id = $getProxyID;
+        // }
 
         $storeAccounts->status_id = 1;
         $storeAccounts->BillingInUse = $request->BillingInUse;
         $storeAccounts->status_id = $request->statusID;
         $storeAccounts->updated_at = '2020-01-01';
+        $storeAccounts->user_agent = $request->accountsUserAgent;
+        if($request->proxyIP)
+        {
+            $storeAccounts->acc_proxy_id = $current_Proxy_ID[0]->id;
+        }
         $storeAccounts->save();
 
         return response()->json(['success' => 'yay']);
@@ -95,21 +107,29 @@ class accountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($name)
+    public function edit($id)
     {  
+        
         
         $accountData = new Accounts;
         
-        $accountResponse = $accountData->where('account_name', $name)->with(['proxyes'=> function($q)
-            {$q->select('id','ip', 'port','login','password','proxy_type');}])->with(
-            ['owners' => function($q)
-             {$q->select(['id','name']);}])->get();
+        // $accountResponse = $accountData->where('account_name', $name)->with(['proxyes'=> function($q)
+        //     {$q->select('id','ip', 'port','login','password','proxy_type');}])->with(
+        //     ['owners' => function($q)
+        //      {$q->select(['id','name']);}])->get();
 
+        $proxy = Proxy::select('ip')->get();
+        $accountResponse = $accountData->where('id', $id)->with(
+            ['owners' => function($q){$q->select(['id','name']);}])
+        ->with(
+            ['proxyes' => function($q){$q->select(['id','ip']);}])
+        ->get();
         $ownersResponse = Owners::all();
-         
+        
         return response()->json(array(
             'accountResponse' => $accountResponse,
-            'ownersResponse' => $ownersResponse));
+            'ownersResponse' => $ownersResponse,
+            'proxyResponse' => $proxy));
 
         //$v = json($owners + $response);
         
@@ -132,12 +152,21 @@ class accountController extends Controller
     {   
 
         
-        
+        if($request->proxyIP)
+        {
+            $current_Proxy_ID = Proxy::select('id')->where('ip', $request->proxyIP)->get();
+            $current_Proxy_ID = $current_Proxy_ID[0]->id;
+          
+        }
+        else
+        {
+            $current_Proxy_ID = null;
+        }
 
 
         $account_Owner = Owners::where('name', $request->ownerName)->get();
         $getOwnerID = $account_Owner[0]->id;
-
+        
         $storeAccounts = Accounts::where('id', $request->accountID)->update([
         'account_name' => $request->accountName,
         'acc_owner' => $getOwnerID,
@@ -146,20 +175,22 @@ class accountController extends Controller
         'status_id' => 1,
         'BillingInUse' => $request->BillingInUse,
         'status_id' => $request->statusID,
+        'acc_proxy_id' => $current_Proxy_ID,
+        'user_agent' => $request->accountsUserAgent,
 		//'updated_at' => false,
         ]);
 
-        if($request->proxyIP !== null){     
-            $getIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
+        // if($request->proxyIP !== null){     
+        //     $getIdAccount = Accounts::where('account_name', $request->accountName)->get(); 
                     
-            $storeProxy = Proxy::where('id',$getIdAccount[0]->acc_proxy_id)->update([
-            'ip' => $request->proxyIP,
-            'login' => $request->proxyLogin,
-            'port' => $request->proxyPort,
-            'password' => $request->proxyPassword,
-            'proxy_type' => $request->proxyType,
-            ]);
-        }
+        //     $storeProxy = Proxy::where('id',$getIdAccount[0]->acc_proxy_id)->update([
+        //     'ip' => $request->proxyIP,
+        //     'login' => $request->proxyLogin,
+        //     'port' => $request->proxyPort,
+        //     'password' => $request->proxyPassword,
+        //     'proxy_type' => $request->proxyType,
+        //     ]);
+        // }
 
         return response()->json(['success' => 'yay']);
 
@@ -173,13 +204,13 @@ class accountController extends Controller
      */
     public function destroy($name)
     {   
-        $getIdProxy = Accounts::where('account_name', $name)->get();
+        //$getIdProxy = Accounts::where('account_name', $name)->get();
         
         $destroyAccount = Accounts::where('account_name', $name);
 
-        $destroyProxy = Proxy::where('id', $getIdProxy[0]->acc_proxy_id);
+       //$destroyProxy = Proxy::where('id', $getIdProxy[0]->acc_proxy_id);
         
-        $destroyProxy->delete();
+       // $destroyProxy->delete();
         $destroyAccount->delete();
 
         return response()->json(['success' => 'yay']);
