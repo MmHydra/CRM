@@ -67,12 +67,13 @@ class SpendFacebookKeitaro extends Command
                 $logAccount = [];
                 if($elem['acc_proxy_id'] != null)
                 {
-                    $elemProxy = $elem->proxyes['proxy_type'] . '://' . $elem->proxyes['login'] . ':' . $elem->proxyes['password'] . '@' . $elem->proxyes['ip'] . ':' . $elem->proxyes['port'];
+                    $elemProxy = $elem->proxyes['proxy_type'] . 'h://' . $elem->proxyes['login'] . ':' . $elem->proxyes['password'] . '@' . $elem->proxyes['ip'] . ':' . $elem->proxyes['port'];
                 }
                 else
                 {
                     $elemProxy = null;
                 }
+				//dd($elemProxy);
                 $currentRowId = $elem['id'];
 						   
 				array_push($logAccount,[ 'id' => $currentRowId]);
@@ -94,20 +95,21 @@ class SpendFacebookKeitaro extends Command
                        $request = $client->request('GET', $url,   
                             ['body' => json_encode($params),
                             
-                             'connect_timeout' => 10,
+                             'connect_timeout' => 3,
                              'proxy' => $elemProxy,
                              'headers' => [ 'User-Agent' => $elem['user_agent'],
-                                            'Api-Key' => '02acaa330ea77b057e680fbd23f78c91'
+                                            /* 'Api-Key' => '02acaa330ea77b057e680fbd23f78c91' */
                                           ],
                             ]);
                         ;
                         if($request->getStatusCode() == 0){
-                           
+							dd($request->getBody());
                             throw new \Exception('Failed');
                         }
 
                 } 
                 catch(\GuzzleHttp\Exception\ConnectException $e){
+					dd($e);
                     //array_push($invalidIDs, $currentRowId);
                     array_push($logAccount,[ 'ErrorMsg' => 'Connection timed out'] );
                     array_push($logAll,$logAccount); 
