@@ -25,7 +25,7 @@ class StoreProxyForm extends FormRequest
     {  
         return [
             'proxyIP' => 'Required|ip',
-            'proxyPort' => 'Required|integer|digits_between:1,4',
+            'proxyPort' => 'Required|integer|digits_between:1,8',
             'proxyLogin' => 'Required',
             'proxyPassword' => 'Required',
            
@@ -38,7 +38,7 @@ class StoreProxyForm extends FormRequest
       'proxyIP.ip' => 'Прокси IP должен соответствовать формату IP адреса',
       'proxyPort.required' => 'Proxy порт должен быть заполнен',
       'proxyPort.integer' => 'Proxy порт должен состоять из цифр',
-      'proxyPort.digits_between' => 'Proxy порт должен содержать не больше 4 знаков',
+      'proxyPort.digits_between' => 'Proxy порт должен содержать не больше 8 знаков',
       'proxyLogin.required' => 'Proxy логин должен быть заполнен',
       'proxyPassword.required' => 'Proxy пароль должен быть заполнен',
 

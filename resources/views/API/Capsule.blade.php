@@ -519,7 +519,11 @@ var sendFormAccountsProxy = {
         .then(function(response){
           message = response;
           console.log(message);
-          alert('Аккаунтов добавлено ' + message.newAccounts + '\r\n'+ 'Аккаунтов обновлено ' + message.updatedAccounts +  '\r\n' + 'Страница будет перезагружена');
+          alert('Аккаунтов добавлено ' + message.newAccounts + '\r\n' + 
+            'Аккаунтов обновлено ' + message.updatedAccounts + '\r\n' + 
+            'Прокси добавлено ' + message.newProxy + '\r\n'+
+            'Прокси обновлено ' + message.proxyUpdated + '\r\n'+  
+            'Страница будет перезагружена');
           window.location = 'API';
         })     
   }
