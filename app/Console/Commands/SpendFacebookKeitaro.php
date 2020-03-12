@@ -47,7 +47,8 @@ class SpendFacebookKeitaro extends Command
     public function handle()
     {
         
-    
+        //$log = new logs_test;
+        //dd(json_decode($log->all()));
 
         $logErrors = [];
 		
@@ -93,19 +94,21 @@ class SpendFacebookKeitaro extends Command
                        $request = $client->request('GET', $url,   
                             ['body' => json_encode($params),
                             
-                            'connect_timeout' => 2,
+                             'connect_timeout' => 10,
                              'proxy' => $elemProxy,
                              'headers' => [ 'User-Agent' => $elem['user_agent'],
                                             'Api-Key' => '02acaa330ea77b057e680fbd23f78c91'
                                           ],
                             ]);
+                        ;
                         if($request->getStatusCode() == 0){
+                           
                             throw new \Exception('Failed');
                         }
+
                 } 
                 catch(\GuzzleHttp\Exception\ConnectException $e){
-                    array_push($invalidIDs, $currentRowId);
-                    
+                    //array_push($invalidIDs, $currentRowId);
                     array_push($logAccount,[ 'ErrorMsg' => 'Connection timed out'] );
                     array_push($logAll,$logAccount); 
                     continue;  
@@ -113,7 +116,7 @@ class SpendFacebookKeitaro extends Command
                   
                 $responce = $request->getBody();
                 $responce = json_decode($responce->getContents());
-                 // dd($responce, $logAll);
+                //dd($responce, $logAll);
 					if(isset($responce->error)){
                         
                         array_push($invalidIDs, $currentRowId);
@@ -134,15 +137,25 @@ class SpendFacebookKeitaro extends Command
                 foreach($accounts as $act_id)
                 {
                     $endpoint = strval($act_id->id) . '/adsets';
-                    $params = [
-                            'access_token' => $elem['token_fb'],            
+                    $params = [ 
+                                'access_token' => $elem['token_fb'],            
                     ];
                     $adsets_dirty_url = $path .  $endpoint . '?' . http_build_query($params);
                     
-                    $request = $client->get($adsets_dirty_url);
+                   // $request = $client->get($adsets_dirty_url);
+                   $request = $client->request('GET', $adsets_dirty_url,   
+                            [                           
+                             'proxy' => $elemProxy,
+                             'headers' => [ 'User-Agent' => $elem['user_agent'],
+                                            
+                                          ],
+                            ]);
+                   
                     $responce = $request->getBody();
                     $responce = $responce->getContents();
+
 					$adsetAnswer = json_decode($responce);
+
 					if(isset($answer->error)){
                         array_push($invalidIDs, $currentRowId);
 						array_push($logAccount,[ 'ErrorMsg' => $answer->error->message] );
@@ -160,7 +173,7 @@ class SpendFacebookKeitaro extends Command
 
                     
                 }   
-
+                    //dd($adsets);
                     $insights = [];
                     
                 foreach ($adsetsCurency as $adsetDataElem)
@@ -178,7 +191,14 @@ class SpendFacebookKeitaro extends Command
 					
                     $insights_dirty_url = $path . $endpoint . '/insights' . '?' . http_build_query($params);
 					
-                    $request = $client->get($insights_dirty_url);
+                    //$request = $client->get($insights_dirty_url);
+                    $request = $client->request('GET', $insights_dirty_url,   
+                            [                           
+                             'proxy' => $elemProxy,
+                             'headers' => [ 'User-Agent' => $elem['user_agent'],
+                                            
+                                          ],
+                            ]);
                     $responce = $request->getBody();
                     $responce = $responce->getContents();
 					
@@ -270,5 +290,6 @@ class SpendFacebookKeitaro extends Command
         $createLog = new logs_test;
         $createLog->log_text = json_encode($logAll);
         $createLog->save();
+
     }   
 }
