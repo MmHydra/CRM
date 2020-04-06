@@ -49,12 +49,13 @@ Route::get('/getcontents', 'IndexController@GETCONT');
 
 		Route::get('/getAccountsFBtool', 'DataPanel@getAccountsFBtool');
 
-
+		
 
 		Route::get('/getProxy', 'DataPanel@getProxy');
 
 		Route::resource('proxy', 'ProxyController');
-
+		
+		Route::get('/getAccountsFBtoolTEST', 'DataPanel@getAccountsFBtoolTEST');
 	});
 });
 

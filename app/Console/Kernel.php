@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
          //          ->everyMinute();
 
         $schedule->command('recievePush:facebookKeitaro')->everyThirtyMinutes();//->everyMinute();//->everyThirtyMinutes();
+		$schedule->command('getAccounts:FBtool')->everyHour();
     }
 
     /**

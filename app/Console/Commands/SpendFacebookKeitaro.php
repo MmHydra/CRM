@@ -85,7 +85,7 @@ class SpendFacebookKeitaro extends Command
                             'access_token' => $elem['token_fb'],
                             
                             
-                            'fields' => 'adaccounts{name,business,account_id,id,currency}',
+                            'fields' => 'adaccounts{name,business,account_id,id,currency, timezone_name}',
                 ];
 
                 $url = $path . $endpoint . '?' . http_build_query($params);
@@ -109,7 +109,7 @@ class SpendFacebookKeitaro extends Command
 
                 } 
                 catch(\GuzzleHttp\Exception\ConnectException $e){
-					dd($e);
+					//dd($e);
                     //array_push($invalidIDs, $currentRowId);
                     array_push($logAccount,[ 'ErrorMsg' => 'Connection timed out'] );
                     array_push($logAll,$logAccount); 
@@ -166,15 +166,18 @@ class SpendFacebookKeitaro extends Command
                        
                     }
 					foreach($adsetAnswer->data as $adsetsIDs){
-						array_push($adsetsCurency, ['adset_id' => $adsetsIDs->id, 'curency' => $act_id->currency]);
+						array_push($adsetsCurency, ['adset_id' => $adsetsIDs->id, 'curency' => $act_id->currency, 'timezone' => $act_id->timezone_name]);
 						array_push($adsets,$adsetsIDs->id);
 					}
+					
+					
                     
                     
                     
 
                     
                 }   
+				//dd($adsetsCurency);
                     //dd($adsets);
                     $insights = [];
                     
@@ -192,7 +195,7 @@ class SpendFacebookKeitaro extends Command
                     ];
 					
                     $insights_dirty_url = $path . $endpoint . '/insights' . '?' . http_build_query($params);
-					
+					//dd($insights_dirty_url);
                     //$request = $client->get($insights_dirty_url);
                     $request = $client->request('GET', $insights_dirty_url,   
                             [                           
@@ -206,6 +209,7 @@ class SpendFacebookKeitaro extends Command
 					
 					
                     $answer = (array)json_decode($responce);
+					//dd($answer);
 					if(isset($answer['error'])){
                         array_push($invalidIDs, $currentRowId);
 						array_push($logAccount,[ 'ErrorMsg' => $answer['error']->message] );
@@ -219,7 +223,7 @@ class SpendFacebookKeitaro extends Command
 
                 }
 				
-				
+				//dd($insights);
                 array_push($logAccount,[ 'insights' => $insights] );    
                                             
                         $params = [ 
@@ -228,6 +232,7 @@ class SpendFacebookKeitaro extends Command
                         
                                         'from' => $sinceDate,
                                         'to' => $untilDate,
+										//'timezone' => $elem['timezone_name'],
                                         'timezone' => 'Europe/Moscow' //возможно стоит помен¤ть на киев
                                      ],
                                     'grouping' => ['campaign_id'],
@@ -254,13 +259,14 @@ class SpendFacebookKeitaro extends Command
                             $keitaro_adset_id = $elem['adset_id'];
 
                             foreach ( $elem['data'] as $insight) 
-                            {   
+                            {  // dd($elem['timezone']);
                                 $keitaro_data = [
                                     'start_date' => $insight->date_start . ' 00:00:00',
                                     'end_date' => $insight->date_start . ' 23:59:59',
                                     'cost' => $insight->spend,
                                     'currency' => $elem['curency'],
-                                    'timezone' => 'Europe/Moscow',
+									'timezone' => $elem['timezone'],
+                                    //'timezone' => 'Europe/Moscow',
                                     'only_campaign_uniques' => 1,
                                     'filters' => ['ad_campaign_id' =>  $elem['adset_id']],
                                 ];

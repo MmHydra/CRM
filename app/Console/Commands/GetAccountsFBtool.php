@@ -1,52 +1,50 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Console\Commands;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Console\Command;
 
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Accounts;
 use App\Proxy;
-use App\Owners;
-use App\BusinessManager;
-use App\Console\Commands\GetAccountsFBtool;
+use App\logs_test;
 use GuzzleHttp\Client;
 
-class DataPanel extends Controller
+class GetAccountsFBtool extends Command
 {
-    public function index()
-		 {
-		 	  	$array_Data_Accounts = array();
-		 	  	
-		 		
-		 		 $Data_Accounts = Accounts::all()->load('owners')->load('BusinessManager');
-		 		
-		 		
-		 		 $Data_Owners = Owners::all();
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'getAccounts:FBtool';
 
-		 		 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Command description';
 
-		 		 return view('API.Accounts')->with(['Data_Owners' => $Data_Owners,
-		 											'array_Data_Accounts' => $Data_Accounts]);
-		 																		
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
-		 }
-	Public function getADSs(request $request)
-		 {	
-		 	//$test = ['Andrey1', 'Andrey2', 'Andrey3'];
-		 	//$request->acc_name
-
-		 	$responce = Accounts::whereIn('account_name', $request->acc_name)->with(['BusinessManager' => function($q) {
-														    $q->select(['acc_name', 'acc_id','id']);
-															},'BusinessManager.ACT' => function($q) {$q->select('act_id', 'bm_id'); }])->get();
-		 	
-			return response()->json($responce);
-
-		 }
-
-	Public function getAccountsFBtool()
-	{	
-		$arrCreateAccounts = [];
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $arrCreateAccounts = [];
 		$arrUpdateAccounts = [];
 		$arrProxyCreate = [];
 
@@ -139,25 +137,9 @@ class DataPanel extends Controller
 				]);
 			}
 		}
-
-		return response()->json(['newAccounts' => count($arrCreateAccounts), 'updatedAccounts' => count($arrUpdateAccounts), 'proxyUpdated' => $proxyUpdated, 'newProxy' => count($arrProxyCreate)]);
-
-
 		
-	}
-
-	public function getProxy()
-	{
-		$dataProxy = Proxy::all();
-		
-		return response()->json($dataProxy);
-	}
-	
-	public function getAccountsFBtoolTEST()
-	{
-		$test = new GetAccountsFBtool;
-		$test->handle();
-	}
-
-
+		$log = new logs_test();
+		$log->log_text = 'Аккаунтов добавлено: ' . count($arrCreateAccounts) . ' Аккаунтов обновлено: ' . count($arrUpdateAccounts);
+        $log->save();
+    }
 }
